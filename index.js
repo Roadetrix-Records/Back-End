@@ -1,9 +1,10 @@
 const express = require('express');
-const app = express();
+const server = express();
 const bodyParser = require('body-parser');
+const bcrypt = require('bcryptjs');
 
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({extended: false}));
+server.use(bodyParser.json());
+server.use(bodyParser.urlencoded({extended: false}));
 
 let data = [
     {
@@ -29,19 +30,20 @@ let data = [
     }
 ]
 
-app.get('/', (req, res) => {
-    res.send(data);
-});
+// server.get('/', (req, res) => {
+//     res.send(data);
+// });
 
-app.get('/test', (req, res) => {
-    res.send('Working');
-})
+// server.get('/test', (req, res) => {
+//     res.send('Working');
+// })
 
-app.post('/', (req, res) => {
-    let data = [...data, req.body];
-    res.status(200).send('Succesful post!');
-})
+// server.post('/', (req, res) => {
+//     let data = [...data, req.body];
+//     res.status(200).send('Succesful post!');
+// })
 
-app.listen(5000, () => {
-    console.log('listening on port 5000');
-})
+// server.listen(5000, () => {
+//     console.log('listening on port 5000');
+// })
+
