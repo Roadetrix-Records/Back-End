@@ -1,10 +1,14 @@
 const express = require('express');
+const cors = require('cors')
 const server = express();
 const bodyParser = require('body-parser');
-const bcrypt = require('bcryptjs');
+require('dotenv').config();
+
+// const bcrypt = require('bcryptjs');
 
 server.use(bodyParser.json());
 server.use(bodyParser.urlencoded({extended: false}));
+server.use(cors());
 
 let data = [
     {
@@ -43,7 +47,18 @@ let data = [
 //     res.status(200).send('Succesful post!');
 // })
 
-// server.listen(5000, () => {
-//     console.log('listening on port 5000');
-// })
+server.get('/spotify', (req, res) => {
+    let scopes = 'user-read-private user-read-email';
+    let redirect_uri = 'https://www.facebook.com/';
+    res.redirect('https://accounts.spotify.com/authorize' +
+    '?response_type=code' +
+    '&client_id=' + process.env.CLIENT_ID +
+    (scopes ? '&scope=' + encodeURIComponent(scopes) : '') +
+    '&redirect_uri=' + encodeURIComponent(redirect_uri));
+})
+
+server.listen(5000, () => {
+    console.log('listening on port 5000');
+})
+
 
