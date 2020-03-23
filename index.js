@@ -1,9 +1,14 @@
 const express = require('express');
-const app = express();
+const cors = require('cors')
+const server = express();
 const bodyParser = require('body-parser');
+require('dotenv').config();
 
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({extended: false}));
+// const bcrypt = require('bcryptjs');
+
+server.use(bodyParser.json());
+server.use(bodyParser.urlencoded({extended: false}));
+server.use(cors());
 
 let data = [
     {
@@ -29,19 +34,31 @@ let data = [
     }
 ]
 
-app.get('/', (req, res) => {
-    res.send(data);
-});
+// server.get('/', (req, res) => {
+//     res.send(data);
+// });
 
-app.get('/test', (req, res) => {
-    res.send('Working');
+// server.get('/test', (req, res) => {
+//     res.send('Working');
+// })
+
+// server.post('/', (req, res) => {
+//     let data = [...data, req.body];
+//     res.status(200).send('Succesful post!');
+// })
+
+server.get('/spotify', (req, res) => {
+    let scopes = 'user-read-private user-read-email';
+    let redirect_uri = 'https://www.facebook.com/';
+    res.redirect('https://accounts.spotify.com/authorize' +
+    '?response_type=code' +
+    '&client_id=' + process.env.CLIENT_ID +
+    (scopes ? '&scope=' + encodeURIComponent(scopes) : '') +
+    '&redirect_uri=' + encodeURIComponent(redirect_uri));
 })
 
-app.post('/', (req, res) => {
-    let data = [...data, req.body];
-    res.status(200).send('Succesful post!');
-})
-
-app.listen(5000, () => {
+server.listen(5000, () => {
     console.log('listening on port 5000');
 })
+
+
