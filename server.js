@@ -5,14 +5,14 @@ const cors = require('cors');
 const server = express();
 require('dotenv').config();
 
-const PORT = 5000;
+const port = process.env.PORT || 5000;
 
 server.use(cors());
 server.use(express.json());
 server.use('/spotify', spotifyRouter);
 
-server.listen(PORT, () => {
-    console.log(`listening on port ${PORT}`);
+server.listen(port, () => {
+    console.log(`listening on port ${port}`);
 })
 
 
