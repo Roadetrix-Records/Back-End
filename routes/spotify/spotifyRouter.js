@@ -92,7 +92,7 @@ router.get('/latest-4', async (req, res) => {
                 albumName: albums[i].name,
                 tracks: [],
                 artists: [],
-                alubmImgUrl: albums[i].imgUrl,
+                albumImgUrl: albums[i].imgUrl,
                 albumPublicUrl: albums[i].externalUrl,
                 albumPrivateUrl: albums[i].privateUrl,
                 albumReleaseDate: albums[i].releaseDate
@@ -111,17 +111,27 @@ router.get('/latest-4', async (req, res) => {
             }
             // For tracks per album => get track object
             let tracks = await Spotify.getTracksIdByAlbum(albums[i].id);
-            console.log(tracks);
             for(let k=0; k<tracks.length; k++){
                 let track = await Spotify.getTrackById(tracks[k].trackId);
+                let trackArtistIds = await Spotify.getArtistsByTrack(track.id);
+                let trackArtists = [];
+                // console.log(trackArtistIds);
+                for(j=0; j<trackArtistIds.length; j++){
+                    let trackArtist = await Spotify.getArtistById(trackArtistIds[j].artistId);
+                    trackArtists.push(trackArtist);
+                }
                 returnData[i].tracks.push({
                     trackId: track.id,
                     trackName: track.name,
-                    trackImgUrl: track.imgUrl,
                     trackPublicUrl: track.externalUrl,
-                    trackPrivateUrl: track.privateUrl
+                    trackPrivateUrl: track.privateUrl,
+                    artists: [...trackArtists]
                 })
-                // Get artists per track
+            }
+            if(returnData[i].tracks.length > 1){
+                returnData[i].isAlbum = true;
+            }else{
+                returnData[i].isAlbum = false;
             }
         }
         res.status(200).json(returnData);
