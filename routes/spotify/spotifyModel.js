@@ -13,7 +13,12 @@ module.exports = {
     addAlbumArtists,
     addAlbumTracks,
     addTrackArtists,
-    getAlbums
+    getLatest4,
+    getArtistsIdByAlbum,
+    getTracksIdByAlbum,
+    getArtistsByTrack,
+    getArtistById,
+    getTrackById
 }
 
 // ======== DB Delete Functions ========
@@ -74,8 +79,37 @@ function addTrackArtists(trackArtists){
         .insert(trackArtists);
 }
 
-// ======== DB Select Functions ========
+// ======== DB Get Latest ========
+function getLatest4(){
+    return db('Albums')
+        .orderBy('releaseDate', 'desc')
+        .limit(4);
+}
 
-function getAlbums(){
-    return db('Albums');
+function getArtistsIdByAlbum(albumId){
+    return db.select('artistId')
+        .from('AlbumArtists')
+        .where({albumId});
+}
+
+function getTracksIdByAlbum(albumId){
+    return db.select('trackId')
+        .from('AlbumTracks')
+        .where({albumId});
+}
+
+function getArtistsByTrack(trackId){
+    return db.select('artistId')
+        .from('TrackArtists')
+        .where({trackId})
+}
+
+function getArtistById(artistId){
+    return db('Artists')
+        .where('id', artistId).first();
+}
+
+function getTrackById(trackId){
+    return db('Tracks')
+        .where('id', trackId).first();
 }

@@ -1,11 +1,10 @@
-// Update with your config settings.
+require('dotenv').config();
 
+console.log(process.env.DATABASE_URL)
 module.exports = {
   development: {
     client: 'pg',
-    user: process.env.PG_USERNAME, 
-    password: process.env.PG_PASSWORD,
-    connection: 'postgres://localhost/roadetrix',
+    connection: process.env.DATABASE_URL,
     migrations: {
       directory: './data/migrations'
     },
