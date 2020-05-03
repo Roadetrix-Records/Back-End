@@ -12,13 +12,17 @@ exports.up = function(knex) {
             .notNullable();
         table.text('externalUrl')
             .notNullable();
+        table.text('privateUrl')
+            .notNullable();
   })
   .createTable('Tracks', table => {
         table.text('id')
             .primary();
         table.text('name')
             .notNullable();
-        table.text('trackUrl')
+        table.text('externalUrl')
+            .notNullable();
+        table.text('privateUrl')
             .notNullable();
   })
   .createTable('Artists', table => {
@@ -27,6 +31,8 @@ exports.up = function(knex) {
         table.text('name')
             .notNullable();
         table.text('externalUrl')
+            .notNullable();
+        table.text('privateUrl')
             .notNullable();
         table.integer('followers')
             .notNullable();
@@ -46,7 +52,7 @@ exports.up = function(knex) {
             .onDelete('CASCADE');
         table.primary(['albumId', 'trackId']);
   })
-  .createTable('AlubmArtists', table => {
+  .createTable('AlbumArtists', table => {
         table.text('albumId')
             .notNullable()
             .references('Albums.id')
@@ -59,10 +65,24 @@ exports.up = function(knex) {
             .onDelete('CASCADE');
         table.primary(['albumId', 'artistId']);
   })
+  .createTable('TrackArtists', table => {
+        table.text('trackId')
+            .notNullable()
+            .references('Tracks.id')
+            .onUpdate('CASCADE')
+            .onDelete('CASCADE');
+        table.text('artistId')
+            .notNullable()
+            .references('Artists.id')
+            .onUpdate('CASCADE')
+            .onDelete('CASCADE');
+        table.primary(['trackId', 'artistId']);
+  })
 };
 
 exports.down = function(knex) {
   return knex.schema
+    .dropTableIfExists('TrackArtists')
     .dropTableIfExists('AlbumArtists')
     .dropTableIfExists('AlbumTracks')
     .dropTableIfExists('Artists')
