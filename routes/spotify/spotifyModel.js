@@ -18,7 +18,9 @@ module.exports = {
     getTracksIdByAlbum,
     getArtistsByTrack,
     getArtistById,
-    getTrackById
+    getTrackById,
+    getAlbums,
+    getAlbumById
 }
 
 // ======== DB Delete Functions ========
@@ -79,7 +81,7 @@ function addTrackArtists(trackArtists){
         .insert(trackArtists);
 }
 
-// ======== DB Get Latest ========
+// ======== DB Get Latest Releases ========
 function getLatest4(){
     return db('Albums')
         .orderBy('releaseDate', 'desc')
@@ -113,4 +115,18 @@ function getTrackById(trackId){
     return db('Tracks')
         .where('id', trackId).first();
 }
+
+// ======== DB Get All Albums ========
+function getAlbums(){
+    return db('Albums');
+}
+
+// ======== DB Get Album by id ========
+function getAlbumById(id){
+    return db('Albums')
+        .where({id})
+        .first();
+}
+
+
 
