@@ -36,53 +36,7 @@ router.post('/data', async (req, res) => {
     }
 })
 
-// router.get('/data/albums', (req, res) => {
-//     Spotify.getAlbums()
-//     .then(albums => {
-//         res.status(201).json(albums);
-//     })
-//     .catch(err => {
-//         res.status(500).json(err);
-//     })
-// })
-
-/*
-    Returns latest release
-    If album
-        Expect multiple artists
-        Expect multiple tracks
-    If track
-        Expect multiple artists
-        Expect single track
-    Return {
-        albumName,
-        tracks: [
-            {
-                name,
-                imgUrl,
-                privateUrl,
-                publicUrl
-            }
-        ],
-        artists: [
-            {
-                name,
-                imgUrl,
-                privateUrl,
-                publicUrl
-            }
-        ],
-        albumImgUrl,
-        publicUrl
-        privateUrl,
-        releaseDate,
-        isAlbum: true || false
-    }
-*/
 router.get('/latest-4', async (req, res) => {
-    // Get latest albums
-    // Get artists per album
-    // Get tracks per album
     try {
         const albums = await Spotify.getLatest4();
         const returnData = [];
@@ -90,12 +44,12 @@ router.get('/latest-4', async (req, res) => {
             returnData.push({
                 albumId: albums[i].id,
                 albumName: albums[i].name,
-                tracks: [],
-                artists: [],
                 albumImgUrl: albums[i].imgUrl,
                 albumPublicUrl: albums[i].externalUrl,
                 albumPrivateUrl: albums[i].privateUrl,
-                albumReleaseDate: albums[i].releaseDate
+                albumReleaseDate: albums[i].releaseDate,
+                tracks: [],
+                artists: []
             })
             // For artists per album => get artist object
             let artists = await Spotify.getArtistsIdByAlbum(albums[i].id);
@@ -139,8 +93,74 @@ router.get('/latest-4', async (req, res) => {
     catch(err){
         res.status(500).json(err);
     }
-    
-    
+})
+
+router.get('/albums', (req, res) => {
+    Spotify.getAlbums()
+    .then(albums => {
+        res.status(200).json(albums);
+    })
+    .catch(err => {
+        res.status(500).json(err);
+    })
+})
+
+router.get('/release-data/:id', async (req, res) => {
+    try {
+        const album = await Spotify.getAlbumById(req.params.id);
+        const returnData = {
+            albumId: album.id,
+            albumName: album.name,
+            albumImgUrl: album.imgUrl,
+            albumPublicUrl: album.externalUrl,
+            albumPrivateUrl: album.privateUrl,
+            albumReleaseDate: album.releaseDate,
+            tracks: [],
+            artists: []
+        }
+
+        let artists = await Spotify.getArtistsIdByAlbum(album.id);
+        for(let i=0; i<artists.length; i++){
+            let artist = await Spotify.getArtistById(artists[i].artistId);
+            returnData.artists.push({
+                artistId: artist.id,
+                artistName: artist.name,
+                artistImgUrl: artist.imgUrl,
+                artistPublicUrl: artist.externalUrl,
+                artistPrivateUrl: artist.privateUrl
+            })
+        }
+        // For tracks per album => get track object
+        let tracks = await Spotify.getTracksIdByAlbum(album.id);
+        for(let i=0; i<tracks.length; i++){
+            let track = await Spotify.getTrackById(tracks[i].trackId);
+            let trackArtistIds = await Spotify.getArtistsByTrack(track.id);
+            let trackArtists = [];
+            // console.log(trackArtistIds);
+            for(j=0; j<trackArtistIds.length; j++){
+                let trackArtist = await Spotify.getArtistById(trackArtistIds[j].artistId);
+                trackArtists.push(trackArtist);
+            }
+            returnData.tracks.push({
+                trackId: track.id,
+                trackName: track.name,
+                trackPublicUrl: track.externalUrl,
+                trackPrivateUrl: track.privateUrl,
+                artists: [...trackArtists]
+            })
+        }
+        if(returnData.tracks.length > 1){
+            returnData.isAlbum = true;
+        }else{
+            returnData.isAlbum = false;
+        }
+
+        res.status(200).json(returnData);
+    }
+    catch(err){
+        res.status(500).json(err);
+    }
+
 })
 
 module.exports = router;
