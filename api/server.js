@@ -2,9 +2,11 @@ const express = require('express');
 const cors = require('cors');
 require('dotenv').config();
 
-const spotifyRouter = require('../routes/spotify/spotifyRouter');
-const submissionsRouter = require('../routes/submissions/submissionsRouter');
-const authRouter = require('../routes/auth/authRouter');
+const spotifyRouter = require('../routes/spotifyRouter');
+const submissionsRouter = require('../routes/submissionsRouter');
+const authRouter = require('../routes/authRouter');
+
+const authenticator = require('../utils/authenticator');
 
 const server = express();
 

@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const Spotify = require('./spotifyModel');
+const Spotify = require('../data/models/spotifyModel');
 
 router.get('/', (req, res) => {
     res.status(201).json({ message: 'connected!' });
