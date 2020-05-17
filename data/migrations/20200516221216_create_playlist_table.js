@@ -6,6 +6,10 @@ exports.up = function(knex) {
         .notNullable();
         table.text('playlistId')
         .notNullable();
+        table.text('img')
+        .notNullable();
+        table.text('privateUrl')
+        .notNullable();
     })
 };
 
