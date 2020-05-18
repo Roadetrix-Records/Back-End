@@ -3,16 +3,14 @@ const router = express.Router();
 const Playlist = require('../data/models/playlistModel');
 
 router.put('/', (req, res) => {
-    const url = req.body.link;
-    const id = req.body.id
-
-    let parts = url.split('/');
-    let playlistId = parts[parts.length - 1];
+    console.log(req.body);
 
     Playlist.updatePlaylist({
-        id,
-        url,
-        playlistId
+        id: req.body.id,
+        url: req.body.url,
+        playlistId: req.body.playlistId,
+        img: req.body.img,
+        privateUrl: req.body.privateUrl
     })
     .then(() => {
         res.status(200).json({
