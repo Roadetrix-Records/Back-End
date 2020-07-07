@@ -1,12 +1,13 @@
 const express = require('express');
 const router = express.Router();
 const Spotify = require('../data/models/spotifyModel');
+const authenticator = require('../utils/authenticator');
 
 router.get('/', (req, res) => {
     res.status(201).json({ message: 'connected!' });
 })
 
-router.post('/data', async (req, res) => {
+router.post('/data', authenticator, async (req, res) => {
     
     // Clear current data base
     try {
@@ -36,9 +37,9 @@ router.post('/data', async (req, res) => {
     }
 })
 
-router.get('/latest-4', async (req, res) => {
+router.get('/latest-6', async (req, res) => {
     try {
-        const albums = await Spotify.getLatest4();
+        const albums = await Spotify.getLatest6();
         const returnData = [];
         for(let i=0; i < albums.length; i++){
             returnData.push({

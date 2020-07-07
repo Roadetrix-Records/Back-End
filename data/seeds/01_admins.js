@@ -1,4 +1,5 @@
 const bcrypt = require('bcryptjs');
+require('dotenv').config();
 
 exports.seed = function(knex) {
   // Deletes ALL existing entries
@@ -8,7 +9,7 @@ exports.seed = function(knex) {
       return knex('Admins').insert([
         { 
           username: 'jonahtuska',
-          password: bcrypt.hashSync('password'),
+          password: bcrypt.hashSync(process.env.ADMIN_PASSWORD),
           firstName: 'Jonah',
           lastName: 'Tuska'
         },

@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const Playlist = require('../data/models/playlistModel');
+const authenticator = require('../utils/authenticator');
 
 router.put('/', (req, res) => {
     console.log(req.body);

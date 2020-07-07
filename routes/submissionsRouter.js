@@ -1,8 +1,9 @@
 const express = require('express');
 const router = express.Router();
 const Submission = require('../data/models/submissionsModel');
+const authenticator = require('../utils/authenticator');
 
-router.get('/', (req, res) => {
+router.get('/', authenticator, (req, res) => {
     Submission.get()
     .then(submissions => {
         res.status(200).json(submissions);
@@ -24,7 +25,7 @@ router.post('/', submissionExists, validateLength, (req, res) => {
     })
 })
 
-router.delete('/:id', idExists, (req, res) => {
+router.delete('/:id', authenticator, idExists, (req, res) => {
     Submission.del(req.params.id)
     .then(() => {
         res.status(200).json({
