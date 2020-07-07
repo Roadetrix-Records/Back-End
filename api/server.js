@@ -7,8 +7,6 @@ const submissionsRouter = require('../routes/submissionsRouter');
 const authRouter = require('../routes/authRouter');
 const playlistRouter = require('../routes/playlistRouter');
 
-const authenticator = require('../utils/authenticator');
-
 const server = express();
 
 server.use(cors());

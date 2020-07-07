@@ -13,7 +13,7 @@ module.exports = {
     addAlbumArtists,
     addAlbumTracks,
     addTrackArtists,
-    getLatest4,
+    getLatest6,
     getArtistsIdByAlbum,
     getTracksIdByAlbum,
     getArtistsByTrack,
@@ -82,10 +82,10 @@ function addTrackArtists(trackArtists){
 }
 
 // ======== DB Get Latest Releases ========
-function getLatest4(){
+function getLatest6(){
     return db('Albums')
         .orderBy('releaseDate', 'desc')
-        .limit(4);
+        .limit(6);
 }
 
 function getArtistsIdByAlbum(albumId){

@@ -1,13 +1,13 @@
 # Roadetrix.com
 
 ## Getting Started
----------------
 To get the server running locally:
 - Clone this repo
 - Run `npm install`
 - Have a postgres database created locally on your system for this server
 - Create a `.env` file in the root directory
 - Add `DATABASE_URL=database-url-here` 
+- ADD `ADMIN_PASSWORD=password-here`
 - Run `knex migrate:latest`
 - Run `knex seed:run`
 - After all of this setup, use `npm run server` to start up the server. If
@@ -16,7 +16,6 @@ you want to use a different port, and an env variable PORT=new-port.
 Note: Knex may need to be installed globally for migration and seeds to run. Also, nodemon may need to be installed globally on your system in order to use npm run server.
 
 ## Making Contributions
----------------
 When contributing to this repository, please first discuss the change you wish to make via issue, email, or any other method with the owners of this repository before making a change.
 
 ### Issue/Bug Request
