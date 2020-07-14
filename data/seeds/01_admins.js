@@ -8,10 +8,10 @@ exports.seed = function(knex) {
       // Inserts seed entries
       return knex('Admins').insert([
         { 
-          username: 'jonahtuska',
-          password: bcrypt.hashSync(process.env.ADMIN_PASSWORD),
-          firstName: 'Jonah',
-          lastName: 'Tuska'
+          username: process.env.ADMIN_USERNAME || 'admin',
+          password: bcrypt.hashSync(process.env.ADMIN_PASSWORD || 'password'),
+          firstName: 'Admin',
+          lastName: 'Admin'
         },
       ]);
     });
