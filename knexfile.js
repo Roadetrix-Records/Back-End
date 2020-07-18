@@ -9,7 +9,7 @@ module.exports = {
     },
     seeds: {
       directory: './data/seeds'
-    }
+    },
   },
 
   // Include Heroku Postgres Add on in heroku

@@ -78,10 +78,19 @@ exports.up = function(knex) {
             .onDelete('CASCADE');
         table.primary(['trackId', 'artistId']);
   })
+  .createTable('FeaturedAlbum', table => {
+        table.text('albumId')
+            .notNullable()
+            .references('Albums.id')
+            .onUpdate('CASCADE')
+            .onDelete('CASCADE')
+        table.primary(['albumId'])
+  })
 };
 
 exports.down = function(knex) {
   return knex.schema
+    .dropTableIfExists('FeaturedAlbum')
     .dropTableIfExists('TrackArtists')
     .dropTableIfExists('AlbumArtists')
     .dropTableIfExists('AlbumTracks')

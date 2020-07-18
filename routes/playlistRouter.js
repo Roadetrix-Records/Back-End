@@ -3,27 +3,24 @@ const router = express.Router();
 const Playlist = require('../data/models/playlistModel');
 const authenticator = require('../utils/authenticator');
 
-router.put('/', (req, res) => {
-    console.log(req.body);
+router.post('/', authenticator, async(req, res) => {
+    try {
+        await Playlist.clearPlaylists();
+    }
+    catch {
+        return res.status(500).json({ message: 'Error clearing database' });
+    }
 
-    Playlist.updatePlaylist({
-        id: req.body.id,
-        url: req.body.url,
-        playlistId: req.body.playlistId,
-        img: req.body.img,
-        privateUrl: req.body.privateUrl
-    })
-    .then(() => {
-        res.status(200).json({
-            message: 'Playlist update successful'
+    try{
+        await Playlist.setPlaylists(req.body);
+        return res.status(201).json({ message: 'Succesfully added data to database' });
+    }
+    catch (error) {
+        return res.status(500).json({
+            message: 'Error adding playlists to database',
+            error: error
         })
-    })
-    .catch(err => {
-        res.status(500).json({
-            message: 'Error updating playlists in database',
-            error: err
-        })
-    })
+    }
 })
 
 router.get('/', (req, res) => {
