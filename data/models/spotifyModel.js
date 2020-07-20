@@ -118,7 +118,8 @@ function getTrackById(trackId){
 
 // ======== DB Get All Albums ========
 function getAlbums(){
-    return db('Albums');
+    return db('Albums')
+        .orderBy('releaseDate', 'desc')
 }
 
 // ======== DB Get Album by id ========
