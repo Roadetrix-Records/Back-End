@@ -14,6 +14,9 @@ exports.up = function(knex) {
             .notNullable();
         table.text('privateUrl')
             .notNullable();
+        table.boolean('isHidden')
+            .notNullable()
+            .defaultTo(false)
   })
   .createTable('Tracks', table => {
         table.text('id')

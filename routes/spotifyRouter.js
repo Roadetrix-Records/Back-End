@@ -163,5 +163,39 @@ router.get('/release-data/:id', async (req, res) => {
     }
 })
 
+router.put('/set-hidden/:id', (req, res) => {
+    Spotify.setHidden(req.params.id, req.body.isHidden)
+    .then(() => {
+        res.status(201).json({ message: 'Successfully updated' });
+    })
+    .catch(err => {
+        res.status(500).json({ 
+            message: 'Error updating isHidden value',
+            error: err
+        })
+    })
+})
+
+router.get('/last-fetch', (req, res) => {
+    Spotify.getLastFetch()
+    .then(lastFetch => {
+        res.status(200).json(lastFetch);
+    })
+    .catch(err => {
+        res.status(500).json({ error: err });
+    })
+})
+
+router.put('/last-fetch', (req, res) => {
+    Spotify.setLastFetch(req.body.date)
+    .then(() => {
+        res.status(201).json({ message: 'Successfully updated latest fetch date' });
+    })
+    .catch(err => {
+        console.log(err);
+        res.status(500).json({ error: err });
+    })
+})
+
 
 module.exports = router;

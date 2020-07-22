@@ -20,7 +20,10 @@ module.exports = {
     getArtistById,
     getTrackById,
     getAlbums,
-    getAlbumById
+    getAlbumById,
+    setHidden,
+    getLastFetch,
+    setLastFetch
 }
 
 // ======== DB Delete Functions ========
@@ -127,6 +130,28 @@ function getAlbumById(id){
     return db('Albums')
         .where({id})
         .first();
+}
+
+// ======== DB Update Hidden ========
+function setHidden(id, isHidden){
+    return db('Albums')
+        .where({id})
+        .first()
+        .update({isHidden})
+}
+
+// ======== DB Latest Fetch ========
+function getLastFetch(){
+    return db('LastFetch')
+        .where('id', 1)
+        .first();
+}
+
+function setLastFetch(date){
+    console.log(date);
+    return db('LastFetch')
+        .where('id', 1)
+        .update({date})
 }
 
 
