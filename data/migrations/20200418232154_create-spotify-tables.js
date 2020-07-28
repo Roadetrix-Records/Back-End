@@ -14,6 +14,9 @@ exports.up = function(knex) {
             .notNullable();
         table.text('privateUrl')
             .notNullable();
+        table.boolean('isHidden')
+            .notNullable()
+            .defaultTo(false)
   })
   .createTable('Tracks', table => {
         table.text('id')
@@ -78,10 +81,15 @@ exports.up = function(knex) {
             .onDelete('CASCADE');
         table.primary(['trackId', 'artistId']);
   })
+  .createTable('FeaturedAlbum', table => {
+        table.increments();
+        table.text('albumId');
+  })
 };
 
 exports.down = function(knex) {
   return knex.schema
+    .dropTableIfExists('FeaturedAlbum')
     .dropTableIfExists('TrackArtists')
     .dropTableIfExists('AlbumArtists')
     .dropTableIfExists('AlbumTracks')

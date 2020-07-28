@@ -161,7 +161,62 @@ router.get('/release-data/:id', async (req, res) => {
     catch(err){
         res.status(500).json(err);
     }
-
 })
+
+router.put('/set-hidden/:id', (req, res) => {
+    Spotify.setHidden(req.params.id, req.body.isHidden)
+    .then(() => {
+        res.status(201).json({ message: 'Successfully updated' });
+    })
+    .catch(err => {
+        res.status(500).json({ 
+            message: 'Error updating isHidden value',
+            error: err
+        })
+    })
+})
+
+router.get('/last-fetch', (req, res) => {
+    Spotify.getLastFetch()
+    .then(lastFetch => {
+        res.status(200).json(lastFetch);
+    })
+    .catch(err => {
+        res.status(500).json({ error: err });
+    })
+})
+
+router.put('/last-fetch', (req, res) => {
+    Spotify.setLastFetch(req.body.date)
+    .then(() => {
+        res.status(201).json({ message: 'Successfully updated latest fetch date' });
+    })
+    .catch(err => {
+        res.status(500).json({ error: err });
+    })
+})
+
+router.put('/set-featured/:id', (req, res) => {
+    Spotify.setFeatured(req.params.id)
+    .then(() => {
+        res.status(201).json({ message: 'Successfully updated featured release' });
+    })
+    .catch(err => {
+        console.log(err);
+        res.status(500).json({ error: err });
+    })
+})
+
+router.get('/featured', async(req, res) => {
+    try{
+        let { albumId } = await Spotify.getFeatured();
+        let release = await Spotify.getAlbumById(albumId);
+        res.status(200).json(release);
+    }
+    catch(err){
+        res.status(500).json({ message: err });
+    }
+})
+
 
 module.exports = router;

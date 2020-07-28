@@ -2,20 +2,19 @@ const db = require('../dbConfig');
 
 module.exports = {
     getPlaylists,
-    updatePlaylist
+    clearPlaylists,
+    setPlaylists
 }
 
 function getPlaylists(){
     return db('Playlists');
 }
 
-function updatePlaylist(obj){
+function clearPlaylists(){
+    return db('Playlists').where('id', '!=', '0').del();
+}
+
+function setPlaylists(playlists){
     return db('Playlists')
-        .where('id', obj.id)
-        .update({
-            url: obj.url,
-            playlistId: obj.playlistId,
-            img: obj.img,
-            privateUrl: obj.privateUrl
-        })
+        .insert(playlists)
 }

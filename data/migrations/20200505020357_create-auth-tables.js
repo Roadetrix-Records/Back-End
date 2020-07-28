@@ -8,9 +8,14 @@ exports.up = function(knex) {
         table.text('firstName');
         table.text('lastName');
     })
+    .createTable('LastFetch', table => {
+        table.increments();
+        table.text('date');
+    })
 };
 
 exports.down = function(knex) {
   return knex.schema
-    .dropTableIfExists('Admins');
+    .dropTableIfExists('Admins')
+    .dropTableIfExists('LastFetch');
 };

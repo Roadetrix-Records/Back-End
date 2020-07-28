@@ -1,4 +1,5 @@
 const db = require('../dbConfig');
+const { where } = require('../dbConfig');
 
 module.exports = {
     clearAlbumTracks,
@@ -20,7 +21,12 @@ module.exports = {
     getArtistById,
     getTrackById,
     getAlbums,
-    getAlbumById
+    getAlbumById,
+    setHidden,
+    getLastFetch,
+    setLastFetch,
+    setFeatured,
+    getFeatured
 }
 
 // ======== DB Delete Functions ========
@@ -118,7 +124,8 @@ function getTrackById(trackId){
 
 // ======== DB Get All Albums ========
 function getAlbums(){
-    return db('Albums');
+    return db('Albums')
+        .orderBy('releaseDate', 'desc')
 }
 
 // ======== DB Get Album by id ========
@@ -128,5 +135,38 @@ function getAlbumById(id){
         .first();
 }
 
+// ======== DB Update Hidden ========
+function setHidden(id, isHidden){
+    return db('Albums')
+        .where({id})
+        .first()
+        .update({isHidden})
+}
+
+// ======== DB Latest Fetch ========
+function setLastFetch(date){
+    return db('LastFetch')
+        .where('id', 1)
+        .update({date});
+}
+
+function getLastFetch(){
+    return db('LastFetch')
+        .where('id', 1)
+        .first();
+}
+
+// ======== DB Featured ========
+function setFeatured(albumId){
+    return db('FeaturedAlbum')
+        .where('id', 1)
+        .update({albumId});
+}
+
+function getFeatured(){
+    return db('FeaturedAlbum')
+        .where('id', 1)
+        .first();
+}
 
 
