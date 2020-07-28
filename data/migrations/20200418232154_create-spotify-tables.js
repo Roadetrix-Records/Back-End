@@ -82,12 +82,8 @@ exports.up = function(knex) {
         table.primary(['trackId', 'artistId']);
   })
   .createTable('FeaturedAlbum', table => {
-        table.text('albumId')
-            .notNullable()
-            .references('Albums.id')
-            .onUpdate('CASCADE')
-            .onDelete('CASCADE')
-        table.primary(['albumId'])
+        table.increments();
+        table.text('albumId');
   })
 };
 

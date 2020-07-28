@@ -192,9 +192,30 @@ router.put('/last-fetch', (req, res) => {
         res.status(201).json({ message: 'Successfully updated latest fetch date' });
     })
     .catch(err => {
+        res.status(500).json({ error: err });
+    })
+})
+
+router.put('/set-featured/:id', (req, res) => {
+    Spotify.setFeatured(req.params.id)
+    .then(() => {
+        res.status(201).json({ message: 'Successfully updated featured release' });
+    })
+    .catch(err => {
         console.log(err);
         res.status(500).json({ error: err });
     })
+})
+
+router.get('/featured', async(req, res) => {
+    try{
+        let { albumId } = await Spotify.getFeatured();
+        let release = await Spotify.getAlbumById(albumId);
+        res.status(200).json(release);
+    }
+    catch(err){
+        res.status(500).json({ message: err });
+    }
 })
 
 
