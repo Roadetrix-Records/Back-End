@@ -12,8 +12,9 @@ router.post('/', authenticator, async(req, res) => {
     }
 
     try{
+        console.log(req.body)
         await Playlist.setPlaylists(req.body);
-        return res.status(201).json({ message: 'Succesfully added data to database' });
+        return res.status(201).json({ message: 'Succesfully added data to database', data: req.body });
     }
     catch (error) {
         return res.status(500).json({
