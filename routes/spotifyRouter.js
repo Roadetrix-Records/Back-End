@@ -55,8 +55,22 @@ router.get('/latest', async (req, res) => {
                 break;
             } else {
                 if(!albums[i].isHidden && albums[i].id !== albumId){
-
+                    /**
+                     * Create an object for key=album_id, value=[artist_id]
+                     * {
+                     *  albumId: [artist_id],
+                     *  ...
+                     * }
+                     */
                     albumArtists[albums[i].id] = await Spotify.getArtistsIdByAlbum(albums[i].id);
+
+                    /**
+                     * Create an object for key=album_id, value=[track_id]
+                     * {
+                     *  albumId: [track_id],
+                     *  ...
+                     * }
+                     */
                     albumTracks[albums[i].id] = await Spotify.getTracksIdByAlbum(albums[i].id);
 
                     returnData.push({
@@ -110,18 +124,84 @@ router.get('/latest', async (req, res) => {
         res.status(200).json(returnData);
     }
     catch(err){
-        res.status(500).json({ error: err });
+        res.status(500).json({
+            message: 'There was an error fetching the data from the database',
+            error: err
+        });
     }
 })
 
-router.get('/albums', (req, res) => {
-    Spotify.getAlbums()
-    .then(albums => {
-        res.status(200).json(albums);
-    })
-    .catch(err => {
-        res.status(500).json(err);
-    })
+router.get('/releases', async (req, res) => {
+    const returnData = [];
+    try{
+        const albums = await Spotify.getAlbums();
+        const albumArtists = {};
+        const albumTracks = {};
+        for(let i=0; i<albums.length; i++){
+            if(!albums[i].isHidden){
+                /**
+                 * Create an object for key=album_id, value=[artist_id]
+                 * {
+                 *  albumId: [artist_id],
+                 *  ...
+                 * }
+                 */
+                albumArtists[albums[i].id] = await Spotify.getArtistsIdByAlbum(albums[i].id);
+
+                /**
+                 * Create an object for key=album_id, value=[track_id]
+                 * {
+                 *  albumId: [track_id],
+                 *  ...
+                 * }
+                 */
+                albumTracks[albums[i].id] = await Spotify.getTracksIdByAlbum(albums[i].id);
+
+                returnData.push({
+                    albumId: albums[i].id,
+                    albumName: albums[i].name,
+                    albumImgUrl: albums[i].imgUrl,
+                    albumPublicUrl: albums[i].externalUrl,
+                    albumPrivateUrl: albums[i].privateUrl,
+                    albumReleaseDate: albums[i].releaseDate,
+                    isHidden: albums[i].isHidden,
+                    artists: [],
+                    tracks: []
+                })
+            }
+        }
+
+        for(let i=0; i<returnData.length; i++){
+            const albumId = returnData[i].albumId
+            for(let j=0; j<albumArtists[albumId].length; j++){
+                const artist = await Spotify.getArtistById(albumArtists[albumId][j].artistId)
+                returnData[i].artists.push({
+                    artistId: artist.id,
+                    artistName: artist.name,
+                    artistImgUrl: artist.imgUrl,
+                    artistPublicUrl: artist.externalUrl,
+                    artistPrivateUrl: artist.privateUrl
+                })
+            }
+            for(let j=0; j<albumTracks[albumId].length; j++){
+                const track = await Spotify.getTrackById(albumTracks[albumId][j].trackId)
+                // trackArtists[track.id] = await Spotify.getArtistsByTrack(track.id);
+                returnData[i].tracks.push({
+                    trackId: track.id,
+                    trackName: track.name,
+                    trackPublicUrl: track.externalUrl,
+                    trackPrivateUrl: track.privateUrl,
+                });
+            }
+        }
+
+        res.status(200).json(returnData);
+    }catch(err){
+        res.status(500).json({
+            message: 'There was an error fetching the data from the database',
+            error: err
+        })
+    }
 })
 
 router.get('/release-data/:id', async (req, res) => {
