@@ -138,37 +138,35 @@ router.get('/releases', async (req, res) => {
         const albumArtists = {};
         const albumTracks = {};
         for(let i=0; i<albums.length; i++){
-            if(!albums[i].isHidden){
-                /**
-                 * Create an object for key=album_id, value=[artist_id]
-                 * {
-                 *  albumId: [artist_id],
-                 *  ...
-                 * }
-                 */
-                albumArtists[albums[i].id] = await Spotify.getArtistsIdByAlbum(albums[i].id);
+            /**
+             * Create an object for key=album_id, value=[artist_id]
+             * {
+             *  albumId: [artist_id],
+             *  ...
+             * }
+             */
+            albumArtists[albums[i].id] = await Spotify.getArtistsIdByAlbum(albums[i].id);
 
-                /**
-                 * Create an object for key=album_id, value=[track_id]
-                 * {
-                 *  albumId: [track_id],
-                 *  ...
-                 * }
-                 */
-                albumTracks[albums[i].id] = await Spotify.getTracksIdByAlbum(albums[i].id);
+            /**
+             * Create an object for key=album_id, value=[track_id]
+             * {
+             *  albumId: [track_id],
+             *  ...
+             * }
+             */
+            albumTracks[albums[i].id] = await Spotify.getTracksIdByAlbum(albums[i].id);
 
-                returnData.push({
-                    albumId: albums[i].id,
-                    albumName: albums[i].name,
-                    albumImgUrl: albums[i].imgUrl,
-                    albumPublicUrl: albums[i].externalUrl,
-                    albumPrivateUrl: albums[i].privateUrl,
-                    albumReleaseDate: albums[i].releaseDate,
-                    isHidden: albums[i].isHidden,
-                    artists: [],
-                    tracks: []
-                })
-            }
+            returnData.push({
+                albumId: albums[i].id,
+                albumName: albums[i].name,
+                albumImgUrl: albums[i].imgUrl,
+                albumPublicUrl: albums[i].externalUrl,
+                albumPrivateUrl: albums[i].privateUrl,
+                albumReleaseDate: albums[i].releaseDate,
+                isHidden: albums[i].isHidden,
+                artists: [],
+                tracks: []
+            })
         }
 
         for(let i=0; i<returnData.length; i++){

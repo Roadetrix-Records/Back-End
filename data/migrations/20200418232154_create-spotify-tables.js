@@ -27,6 +27,12 @@ exports.up = function(knex) {
             .notNullable();
         table.text('privateUrl')
             .notNullable();
+        table.integer('duration')
+            .notNullable();
+        table.boolean('explicit')
+            .notNullable();
+        table.text('previewUrl')
+            .notNullable();
   })
   .createTable('Artists', table => {
         table.text('id')
