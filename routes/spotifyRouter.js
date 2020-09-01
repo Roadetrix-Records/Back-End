@@ -38,10 +38,10 @@ router.post('/data', authenticator, async (req, res) => {
 })
 
 router.get('/latest', async (req, res) => {
-    const MAX_ALBUMS = 6;
+    const MAX_ALBUMS = 5;
     const returnData = [];
     try {
-        const { albumId } = await Spotify.getFeatured();
+        const { featuredId } = await Spotify.getFeatured();
         const albums = await Spotify.getAlbums();
 
         const albumArtists = {};
@@ -54,7 +54,7 @@ router.get('/latest', async (req, res) => {
             if(i === albums.length - 1){ // Make sure we haven't gone pass the length of albums in the db
                 break;
             } else {
-                if(!albums[i].isHidden && albums[i].id !== albumId){
+                if(!albums[i].isHidden && albums[i].id !== featuredId){
                     /**
                      * Create an object for key=album_id, value=[artist_id]
                      * {
@@ -108,6 +108,9 @@ router.get('/latest', async (req, res) => {
                     trackName: track.name,
                     trackPublicUrl: track.externalUrl,
                     trackPrivateUrl: track.privateUrl,
+                    duration: track.duration,
+                    explicit: track.explicit,
+                    previewUrl: track.previewUrl
                 });
             }
         }
@@ -189,6 +192,9 @@ router.get('/releases', async (req, res) => {
                     trackName: track.name,
                     trackPublicUrl: track.externalUrl,
                     trackPrivateUrl: track.privateUrl,
+                    duration: track.duration,
+                    explicit: track.explicit,
+                    previewUrl: track.previewUrl
                 });
             }
         }
@@ -199,63 +205,6 @@ router.get('/releases', async (req, res) => {
             message: 'There was an error fetching the data from the database',
             error: err
         })
-    }
-})
-
-router.get('/release-data/:id', async (req, res) => {
-    try {
-        const album = await Spotify.getAlbumById(req.params.id);
-        const returnData = {
-            albumId: album.id,
-            albumName: album.name,
-            albumImgUrl: album.imgUrl,
-            albumPublicUrl: album.externalUrl,
-            albumPrivateUrl: album.privateUrl,
-            albumReleaseDate: album.releaseDate,
-            tracks: [],
-            artists: []
-        }
-
-        let artists = await Spotify.getArtistsIdByAlbum(album.id);
-        for(let i=0; i<artists.length; i++){
-            let artist = await Spotify.getArtistById(artists[i].artistId);
-            returnData.artists.push({
-                artistId: artist.id,
-                artistName: artist.name,
-                artistImgUrl: artist.imgUrl,
-                artistPublicUrl: artist.externalUrl,
-                artistPrivateUrl: artist.privateUrl
-            })
-        }
-        // For tracks per album => get track object
-        let tracks = await Spotify.getTracksIdByAlbum(album.id);
-        for(let i=0; i<tracks.length; i++){
-            let track = await Spotify.getTrackById(tracks[i].trackId);
-            let trackArtistIds = await Spotify.getArtistsByTrack(track.id);
-            let trackArtists = [];
-            // console.log(trackArtistIds);
-            for(j=0; j<trackArtistIds.length; j++){
-                let trackArtist = await Spotify.getArtistById(trackArtistIds[j].artistId);
-                trackArtists.push(trackArtist);
-            }
-            returnData.tracks.push({
-                trackId: track.id,
-                trackName: track.name,
-                trackPublicUrl: track.externalUrl,
-                trackPrivateUrl: track.privateUrl,
-                artists: [...trackArtists]
-            })
-        }
-        if(returnData.tracks.length > 1){
-            returnData.isAlbum = true;
-        }else{
-            returnData.isAlbum = false;
-        }
-
-        res.status(200).json(returnData);
-    }
-    catch(err){
-        res.status(500).json(err);
     }
 })
 
@@ -356,7 +305,10 @@ router.get('/featured', async(req, res) => {
                 trackName: track.name,
                 trackPublicUrl: track.externalUrl,
                 trackPrivateUrl: track.privateUrl,
-                artists: [...trackArtists]
+                artists: [...trackArtists],
+                duration: track.duration,
+                explicit: track.explicit,
+                previewUrl: track.previewUrl
             })
         }
         if(returnData.tracks.length > 1){
