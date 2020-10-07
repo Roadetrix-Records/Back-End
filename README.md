@@ -1,3 +1,6 @@
+# Architecture
+![Roadetrix Server Architecture](./assets/Architecture.png)
+
 # Roadetrix Records
 Production: [https://roadetrix-staging.herokuapp.com/](https://roadetrix-staging.herokuapp.com/)  
 Staging: [https://roadetrix-staging.herokuapp.com/](https://roadetrix-staging.herokuapp.com/)  
